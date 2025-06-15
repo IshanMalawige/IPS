@@ -1,0 +1,28 @@
+R-02>enable
+R-02#conf t
+R-02(config)#interface serial 0/1/0
+R-02(config-if)#description R-01-Link
+R-02(config-if)#ip address 10.10.13.1 255.255.255.252
+R-02(config-if)#no shutdown
+R-02(config-if)#exit
+
+R-02(config)#interface serial 0/1/1
+R-02(config-if)#description R-03-Link
+R-02(config-if)#ip address 10.10.13.5 255.255.255.252
+R-02(config-if)#no shutdown
+R-02(config-if)#exit
+
+R-02(config)#router ospf 10
+R-02(config-router)#network 10.10.13.0 0.0.0.3 area 0
+R-02(config-router)#network 10.10.13.4 0.0.0.3 area 0
+R-02(config-router)#exit
+
+R-02(config)#interface serial 0/1/0
+R-02(config-if)#ip ospf authentication message-digest
+R-02(config-if)#ip ospf message-digest-key 1 md5 MD5K3y@.
+R-02(config-if)#exit
+
+R-02(config)#interface serial 0/1/1
+R-02(config-if)#ip ospf authentication message-digest
+R-02(config-if)#ip ospf message-digest-key 1 md5 MD5K3y@.
+R-02(config-if)#exit

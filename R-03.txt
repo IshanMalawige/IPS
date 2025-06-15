@@ -1,0 +1,25 @@
+
+R-03>enable
+R-03#conf t
+R-03(config)#interface gigabitethernet 0/0/0
+R-03(config-if)#description SW-03-Link
+R-03(config-if)#ip address 10.10.12.1 255.255.255.0
+R-03(config-if)#no shutdown
+R-03(config-if)#exit
+
+R-03(config)#interface serial 0/1/1
+R-03(config-if)#description R-02-Link
+R-03(config-if)#ip address 10.10.13.6 255.255.255.252
+R-03(config-if)#clock rate 64000
+R-03(config-if)#no shutdown
+R-03(config-if)#exit
+
+R-03(config)#router ospf 10
+R-03(config-router)#network 10.10.12.0 0.0.0.255 area 0
+R-03(config-router)#network 10.10.13.4 0.0.0.3 area 0
+R-03(config-router)#exit
+
+R-03(config)#interface serial 0/1/1
+R-03(config-if)#ip ospf authentication message-digest
+R-03(config-if)#ip ospf message-digest-key 1 md5 MD5K3y@
+R-03(config-if)#exit

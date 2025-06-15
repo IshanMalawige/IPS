@@ -1,0 +1,62 @@
+Router>enable
+Router#configure terminal
+Router(config)#hostname R-01
+R-01(config)#interface gigabitethernet 0/0/0
+R-01(config-if)#description SW-01-Link
+R-01(config-if)#ip address 10.10.10.1 255.255.255.0
+R-01(config-if)#no shutdown
+R-01(config-if)#exit
+
+R-01(config)#interface gigabitethernet 0/0/1
+R-01(config-if)#description SW-02-Link
+R-01(config-if)#ip address 10.10.11.1 255.255.255.0
+R-01(config-if)#no shutdown
+R-01(config-if)#exit
+
+R-01(config)#interface serial 0/1/0
+R-01(config-if)#clock rate 64000
+R-01(config-if)#description R-02-Link
+R-01(config-if)#ip address 10.10.13.2 255.255.255.252
+R-01(config-if)#no shutdown
+R-01(config-if)#exit
+
+R-01(config)#router ospf 10
+R-01(config-router)#network 10.10.10.0 0.0.0.255 area 0
+R-01(config-router)#network 10.10.11.0 0.0.0.255 area 0
+R-01(config-router)#network 10.10.13.0 0.0.0.3 area 0
+R-01(config-router)#exit
+
+R-01(config)#interface serial 0/1/0
+R-01(config-if)#ip ospf message-digest-key 1 md5 MD5K3y@.
+R-01(config-if)#ip ospf authentication message-digest
+R-01(config-if)#exit
+
+
+R-01(config)#license boot module c1900 technology-package securityk9
+R-01#mkdir ipsdir
+R-01(config)#ip ips config location flash:ipsdir
+R-01(config)#ip ips name IOSIPS
+R-01(config)#ip ips signature-definition
+R-01(config-sigdef)#signature 2004 0
+R-01(config-sigdef-sig)#status
+R-01(config-sigdef-sig-status)#enabled true
+R-01(config-sigdef-sig-status)#exit
+
+R-01(config)#interface gig 0/0
+R-01(config-if)#ip ips IOSIPS out
+
+R-01(config)#ip ips signature-category
+R-01(config-ips-category)#category all
+R-01(config-ips-category-action)#retire false
+R-01(config-ips-category-action)#exit
+R-01(config-ips-category)#exit
+
+R01(config)# ip ips name IOSIPS
+R01(config-ips-name)# event-action produce-alert
+R01(config-ips-name)# event-action deny-packet-inline
+
+
+
+
+
+
